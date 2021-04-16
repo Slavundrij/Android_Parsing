@@ -72,18 +72,40 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Elements els = html.select(".item__specifications h1 a");
-            Elements els1 = html.select(".item__specifications h1 span");
-            Elements els2 = html.select("item-price");
-            String name = els.text();
-            String description = els1.text();
-            String price = els2.text();
+            Elements name = null, description = null, price = null;
+            if (url.contains("tsum.ru")) {
+                name = html.select(".item__specifications h1 a");
+                description = html.select(".item__description");
+                price = html.select("item-price");
+            }
+            else if (url.contains("lamoda.ru")) {
+                name = html.select(".product-title__brand-name");
+                description = html.select(".product-title__model-name");
+                price = html.select(".product-prices-root");
+            }
+            else if (url.contains("wildberries.ru")) {
+                name = html.select(".brand");
+                description = html.select(".name");
+                price = html.select(".final-cost");
+            }
+            else if (url.contains("gloria-jeans.ru")) {
+                name = html.select(".js-name-product");
+                description = html.select(".js-name-product");
+                price = html.select(".js-price-info");
+            }
+            else if (url.contains("dsquared2.com")) {
+                name = html.select(".itemAction-title");
+                description = html.select(".itemAction-title");
+                price = html.select(".priceUpdater");
+            }
+            publishProgress(name.text(), description.text(), price.text());
+        }
 
+        private void publishProgress(String name, String description, String price) {
             Bundle bundle = new Bundle();
             bundle.putString("name", name);
             bundle.putString("description", description);
             bundle.putString("price", price);
-
             Message message = new Message();
             message.setData(bundle);
             handler.sendMessage(message);
